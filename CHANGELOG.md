@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.3
+
+- Replace the empty brand icon with a visible integration icon.
+- Reorder number entities so temperature calibration appears below transition duration.
+
 ## 0.1.2
 
 - Add retries for temporary BLE read failures.
