@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.6
+
+- Replace the Home Assistant brand icon PNG with the new Flow Heater focused design.
+
 ## 0.1.5
 
 - Fix reload handling after integration option changes.
