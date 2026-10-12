@@ -3,6 +3,13 @@
     "step": {
       "user": {
         "title": "Aquael Heater",
+        "description": "Select a discovered Aquael Flow Heater BT or enter the BLE address manually.",
+        "data": {
+          "device": "Device"
+        }
+      },
+      "manual": {
+        "title": "Aquael Heater",
         "description": "Enter the BLE address of your Aquael Flow Heater BT.",
         "data": {
           "address": "BLE address"
