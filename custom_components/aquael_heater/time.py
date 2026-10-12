@@ -23,7 +23,6 @@ def time_to_minutes(value: time) -> int:
 
 @dataclass(frozen=True, kw_only=True)
 class AquaelTimeEntityDescription(TimeEntityDescription):
-    display_name: str
     value_key: str
     setter: Callable[[object, int], object]
 
@@ -39,15 +38,13 @@ async def _set_sunset(entity: object, minutes: int) -> None:
 TIMES: tuple[AquaelTimeEntityDescription, ...] = (
     AquaelTimeEntityDescription(
         key="sunrise",
-        name="Aquael Flow Heater BT Sunrise",
-        display_name="Aquael Flow Heater BT Sunrise",
+        translation_key="sunrise",
         value_key="sunrise_minutes",
         setter=_set_sunrise,
     ),
     AquaelTimeEntityDescription(
         key="sunset",
-        name="Aquael Flow Heater BT Sunset",
-        display_name="Aquael Flow Heater BT Sunset",
+        translation_key="sunset",
         value_key="sunset_minutes",
         setter=_set_sunset,
     ),
@@ -65,7 +62,7 @@ class AquaelTime(AquaelEntity, TimeEntity):
     def __init__(self, coordinator, entry, description: AquaelTimeEntityDescription) -> None:
         super().__init__(coordinator, entry, description.key)
         self.entity_description = description
-        self._attr_name = description.display_name
+        self._attr_translation_key = description.translation_key
 
     @property
     def native_value(self) -> time | None:
