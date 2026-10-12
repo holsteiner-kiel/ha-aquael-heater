@@ -1,8 +1,10 @@
 # Aquael Heater
 
+![Aquael Heater banner](docs/banner.jpg)
+
 Home Assistant custom integration for the **Aquael Flow Heater BT** using Home Assistant Bluetooth and ESPHome Bluetooth Proxy.
 
-> Version 0.1.0 is an early release based on community testing and reverse engineered BLE/GATT characteristics. It has been tested with one Aquael Flow Heater BT.
+> Version 0.1.x is an early release based on community testing and reverse engineered BLE/GATT characteristics. It has been tested with one Aquael Flow Heater BT.
 
 ## Features
 
@@ -10,13 +12,11 @@ Home Assistant custom integration for the **Aquael Flow Heater BT** using Home A
 - Manual setup by discovered device or BLE address
 - Climate entity for on/off and target temperature
 - Mode select entity (`fixed` / `day_night`)
-- Max power number entity
 - Night temperature number entity
 - Sunrise and sunset time entities
-- Transition duration number entity
-- Temperature calibration number entity
 - Configurable polling interval
 - Raw temperature diagnostic sensor, disabled by default
+- Configuration entities for maximum power, temperature calibration, and transition duration
 
 ## Requirements
 
@@ -75,10 +75,13 @@ Enabled by default:
 
 - `climate` - Aquael Flow Heater BT
 - `select` - Mode
-- `number` - Max power
 - `number` - Night temperature
 - `time` - Sunrise
 - `time` - Sunset
+
+Configuration entities:
+
+- `number` - Maximum power
 - `number` - Temperature calibration
 - `number` - Transition duration
 
@@ -94,7 +97,7 @@ The integration has currently only been tested with one Aquael Flow Heater BT. M
 
 ## Status
 
-Current 0.1.0 status:
+Current 0.1.x status:
 
 - HACS custom repository installation: tested
 - Bluetooth discovery: tested
