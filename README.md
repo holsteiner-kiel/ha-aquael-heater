@@ -2,17 +2,20 @@
 
 Home Assistant custom integration for the **Aquael Flow Heater BT** using Home Assistant Bluetooth and ESPHome Bluetooth Proxy.
 
-> Early development version. The integration is based on reverse engineered BLE/GATT characteristics and has been tested with one Aquael Flow Heater BT.
+> Version 0.1.0 is an early release based on community testing and reverse engineered BLE/GATT characteristics. It has been tested with one Aquael Flow Heater BT.
 
 ## Features
 
 - Bluetooth discovery for `Flow Heater BT`
-- Manual setup by BLE address as fallback
+- Manual setup by discovered device or BLE address
 - Climate entity for on/off and target temperature
-- Max power number entity
-- Temperature calibration number entity
 - Mode select entity (`fixed` / `day_night`)
-- Optional diagnostic sensors disabled by default
+- Max power number entity
+- Night temperature number entity
+- Sunrise and sunset time entities
+- Transition duration number entity
+- Temperature calibration number entity
+- Raw temperature diagnostic sensor, disabled by default
 
 ## Requirements
 
@@ -49,36 +52,44 @@ Copy `custom_components/aquael_heater` into your Home Assistant `custom_componen
 
 Home Assistant should discover the heater when it sees a connectable BLE advertisement named `Flow Heater BT`.
 
-You can also add the integration manually and enter the BLE address.
+You can also add the integration manually. The setup flow scans for discovered heaters and also offers manual BLE address entry as a fallback.
+
+Bluetooth discovery only presents the heater for confirmation. It does not silently create a config entry without user interaction.
 
 ## Entities
 
 Enabled by default:
 
 - `climate` - Aquael Flow Heater BT
-- `number` - Max power
-- `number` - Temperature calibration
 - `select` - Mode
+- `number` - Max power
+- `number` - Night temperature
+- `time` - Sunrise
+- `time` - Sunset
+- `number` - Temperature calibration
+- `number` - Transition duration
 
 Disabled by default:
 
-- Raw temperature sensor
-- Sunrise minutes sensor
-- Sunset minutes sensor
-- Transition minutes sensor
-- Night temperature sensor
+- `sensor` - Raw temperature
 
 ## Important notes
 
 The heater is controlled through active BLE/GATT read and write operations. Avoid using the official mobile app at the same time as this integration, because the heater may only accept one active BLE connection.
 
+The integration has currently only been tested with one Aquael Flow Heater BT. Multiple heaters should work in principle because entries are keyed by BLE address, but this is not yet tested.
+
 ## Status
 
-Current proof of concept status:
+Current 0.1.0 status:
 
+- HACS custom repository installation: tested
+- Bluetooth discovery: tested
+- Manual setup: tested
 - Read over ESPHome Bluetooth Proxy: tested
 - Write over ESPHome Bluetooth Proxy: tested
 - Climate entity: tested
+- Day/night control entities: tested visually, further runtime testing welcome
 
 ## Disclaimer
 
