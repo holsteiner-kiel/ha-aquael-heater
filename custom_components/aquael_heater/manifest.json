@@ -3,15 +3,16 @@
   "name": "Aquael Heater",
   "bluetooth": [
     {
-      "local_name": "Flow Heater BT",
-      "connectable": true
+      "connectable": true,
+      "local_name": "Flow Heater BT"
     }
   ],
-  "dependencies": ["bluetooth_adapters"],
-  "requirements": ["bleak-retry-connector>=4.4.3"],
   "codeowners": ["@holsteiner-kiel"],
   "config_flow": true,
+  "dependencies": ["bluetooth_adapters"],
   "documentation": "https://github.com/holsteiner-kiel/ha-aquael-heater",
   "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/holsteiner-kiel/ha-aquael-heater/issues",
+  "requirements": ["bleak-retry-connector>=4.4.3"],
   "version": "0.1.0"
 }
