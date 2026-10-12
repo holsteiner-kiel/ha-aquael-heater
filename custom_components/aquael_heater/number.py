@@ -34,6 +34,7 @@ async def _set_calibration(entity: object, value: float) -> None:
 NUMBERS: tuple[AquaelNumberEntityDescription, ...] = (
     AquaelNumberEntityDescription(
         key="max_power",
+        name="Max power",
         translation_key="max_power",
         value_key="max_watt",
         native_min_value=MIN_WATT,
@@ -44,6 +45,7 @@ NUMBERS: tuple[AquaelNumberEntityDescription, ...] = (
     ),
     AquaelNumberEntityDescription(
         key="temperature_calibration",
+        name="Temperature calibration",
         translation_key="temperature_calibration",
         value_key="calibration_c",
         native_min_value=MIN_CALIBRATION_C,
@@ -66,6 +68,8 @@ class AquaelNumber(AquaelEntity, NumberEntity):
     def __init__(self, coordinator, entry, description: AquaelNumberEntityDescription) -> None:
         super().__init__(coordinator, entry, description.key)
         self.entity_description = description
+        self._attr_name = description.name
+        self._attr_translation_key = description.translation_key
 
     @property
     def native_value(self) -> float | None:
