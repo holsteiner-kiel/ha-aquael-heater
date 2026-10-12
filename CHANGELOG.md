@@ -4,6 +4,8 @@
 
 - Fix reload handling after integration option changes.
 - Fix coordinator config entry handling for `async_config_entry_first_refresh`.
+- Move maximum power, temperature calibration, and transition duration to configuration entities.
+- Improve branding with a new Flow Heater focused icon and README banner.
 
 ## 0.1.4
 
