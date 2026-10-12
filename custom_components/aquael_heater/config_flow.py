@@ -33,6 +33,7 @@ class AquaelConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     def __init__(self) -> None:
         self._discovered_devices: dict[str, BluetoothServiceInfoBleak] = {}
+        self._discovery_info: BluetoothServiceInfoBleak | None = None
 
     async def async_step_bluetooth(
         self, discovery_info: BluetoothServiceInfoBleak
@@ -42,13 +43,34 @@ class AquaelConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         await self.async_set_unique_id(address)
         self._abort_if_unique_id_configured()
 
+        self._discovery_info = discovery_info
         self.context["title_placeholders"] = {
             "name": discovery_info.name or DEFAULT_NAME,
         }
 
-        return self.async_create_entry(
-            title=discovery_info.name or DEFAULT_NAME,
-            data={CONF_ADDRESS: address},
+        return await self.async_step_bluetooth_confirm()
+
+    async def async_step_bluetooth_confirm(
+        self, user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
+        if self._discovery_info is None:
+            return await self.async_step_user()
+
+        address = normalize_address(self._discovery_info.address)
+        name = self._discovery_info.name or DEFAULT_NAME
+
+        if user_input is not None:
+            return self.async_create_entry(
+                title=name,
+                data={CONF_ADDRESS: address},
+            )
+
+        return self.async_show_form(
+            step_id="bluetooth_confirm",
+            description_placeholders={
+                "name": name,
+                "address": address,
+            },
         )
 
     async def async_step_user(
