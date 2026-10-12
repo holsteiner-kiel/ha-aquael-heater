@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from typing import Callable
 
 from homeassistant.components.number import NumberEntity, NumberEntityDescription
-from homeassistant.const import UnitOfPower, UnitOfTemperature
+from homeassistant.const import EntityCategory, UnitOfPower, UnitOfTemperature
 
 from .const import (
     CALIBRATION_STEP,
@@ -64,6 +64,7 @@ NUMBERS: tuple[AquaelNumberEntityDescription, ...] = (
         native_max_value=MAX_CALIBRATION_C,
         native_step=CALIBRATION_STEP,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+        entity_category=EntityCategory.CONFIG,
         setter=_set_calibration,
     ),
     AquaelNumberEntityDescription(
@@ -74,6 +75,7 @@ NUMBERS: tuple[AquaelNumberEntityDescription, ...] = (
         native_max_value=MAX_TRANSITION_MINUTES,
         native_step=TRANSITION_STEP,
         native_unit_of_measurement="min",
+        entity_category=EntityCategory.CONFIG,
         setter=_set_transition_duration,
     ),
     AquaelNumberEntityDescription(
@@ -84,6 +86,7 @@ NUMBERS: tuple[AquaelNumberEntityDescription, ...] = (
         native_max_value=MAX_WATT,
         native_step=WATT_STEP,
         native_unit_of_measurement=UnitOfPower.WATT,
+        entity_category=EntityCategory.CONFIG,
         setter=_set_max_power,
     ),
 )
