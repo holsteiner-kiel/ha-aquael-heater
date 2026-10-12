@@ -15,6 +15,7 @@ Home Assistant custom integration for the **Aquael Flow Heater BT** using Home A
 - Sunrise and sunset time entities
 - Transition duration number entity
 - Temperature calibration number entity
+- Configurable polling interval
 - Raw temperature diagnostic sensor, disabled by default
 
 ## Requirements
@@ -55,6 +56,18 @@ Home Assistant should discover the heater when it sees a connectable BLE adverti
 You can also add the integration manually. The setup flow scans for discovered heaters and also offers manual BLE address entry as a fallback.
 
 Bluetooth discovery only presents the heater for confirmation. It does not silently create a config entry without user interaction.
+
+## Options
+
+The polling interval can be changed from the integration options:
+
+```text
+Settings → Devices & services → Aquael Heater → Configure
+```
+
+Default: `30 s`
+Minimum: `15 s`
+Maximum: `300 s`
 
 ## Entities
 
