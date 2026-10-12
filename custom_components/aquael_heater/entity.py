@@ -19,6 +19,11 @@ class AquaelEntity(CoordinatorEntity[AquaelDataUpdateCoordinator]):
         self._attr_unique_id = f"{entry.unique_id}_{key}"
 
     @property
+    def available(self) -> bool:
+        """Return availability based on fresh coordinator data."""
+        return self.coordinator.data is not None and not self.coordinator.data_is_stale
+
+    @property
     def device_info(self) -> DeviceInfo:
         return DeviceInfo(
             identifiers={(DOMAIN, self._entry.unique_id)},

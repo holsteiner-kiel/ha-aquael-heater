@@ -1,8 +1,8 @@
 from __future__ import annotations
 
+from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 from datetime import time
-from typing import Callable
 
 from homeassistant.components.time import TimeEntity, TimeEntityDescription
 
@@ -24,7 +24,7 @@ def time_to_minutes(value: time) -> int:
 @dataclass(frozen=True, kw_only=True)
 class AquaelTimeEntityDescription(TimeEntityDescription):
     value_key: str
-    setter: Callable[[object, int], object]
+    setter: Callable[[object, int], Awaitable[None]]
 
 
 async def _set_sunrise(entity: object, minutes: int) -> None:
@@ -40,12 +40,14 @@ TIMES: tuple[AquaelTimeEntityDescription, ...] = (
         key="sunrise",
         translation_key="sunrise",
         value_key="sunrise_minutes",
+        icon="mdi:weather-sunset-up",
         setter=_set_sunrise,
     ),
     AquaelTimeEntityDescription(
         key="sunset",
         translation_key="sunset",
         value_key="sunset_minutes",
+        icon="mdi:weather-sunset-down",
         setter=_set_sunset,
     ),
 )
@@ -69,5 +71,9 @@ class AquaelTime(AquaelEntity, TimeEntity):
         return minutes_to_time(self.coordinator.data.get(self.entity_description.value_key))
 
     async def async_set_value(self, value: time) -> None:
-        await self.entity_description.setter(self, time_to_minutes(value))
-        await self.coordinator.async_request_refresh()
+        minutes = time_to_minutes(value)
+        await self.coordinator.async_write_and_refresh(
+            lambda: self.entity_description.setter(self, minutes),
+            expected_key=self.entity_description.value_key,
+            expected_value=minutes,
+        )

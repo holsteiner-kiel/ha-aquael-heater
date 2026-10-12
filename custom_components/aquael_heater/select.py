@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from homeassistant.components.select import SelectEntity
+from homeassistant.const import EntityCategory
 
 from .const import MODES
 from .entity import AquaelEntity
@@ -18,6 +19,8 @@ class AquaelModeSelect(AquaelEntity, SelectEntity):
         super().__init__(coordinator, entry, "mode")
         self._attr_translation_key = "mode"
         self._attr_options = list(MODES)
+        self._attr_entity_category = EntityCategory.CONFIG
+        self._attr_icon = "mdi:tune"
 
     @property
     def current_option(self) -> str | None:
@@ -30,5 +33,8 @@ class AquaelModeSelect(AquaelEntity, SelectEntity):
         if option not in MODES:
             return
 
-        await self.coordinator.client.set_mode(option)
-        await self.coordinator.async_request_refresh()
+        await self.coordinator.async_write_and_refresh(
+            lambda: self.coordinator.client.set_mode(option),
+            expected_key="mode",
+            expected_value=option,
+        )

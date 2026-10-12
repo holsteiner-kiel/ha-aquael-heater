@@ -1,7 +1,7 @@
 from __future__ import annotations
 
+from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
-from typing import Callable
 
 from homeassistant.components.number import NumberEntity, NumberEntityDescription
 from homeassistant.const import EntityCategory, UnitOfPower, UnitOfTemperature
@@ -26,7 +26,8 @@ from .entity import AquaelEntity
 @dataclass(frozen=True, kw_only=True)
 class AquaelNumberEntityDescription(NumberEntityDescription):
     value_key: str
-    setter: Callable[[object, float], object]
+    setter: Callable[[object, float], Awaitable[None]]
+    verify_tolerance: float | None = None
 
 
 async def _set_max_power(entity: object, value: float) -> None:
@@ -54,7 +55,9 @@ NUMBERS: tuple[AquaelNumberEntityDescription, ...] = (
         native_max_value=MAX_TEMP_C,
         native_step=TEMP_STEP,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+        icon="mdi:weather-night",
         setter=_set_night_temperature,
+        verify_tolerance=0.05,
     ),
     AquaelNumberEntityDescription(
         key="temperature_calibration",
@@ -65,7 +68,9 @@ NUMBERS: tuple[AquaelNumberEntityDescription, ...] = (
         native_step=CALIBRATION_STEP,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         entity_category=EntityCategory.CONFIG,
+        icon="mdi:thermometer-plus",
         setter=_set_calibration,
+        verify_tolerance=0.05,
     ),
     AquaelNumberEntityDescription(
         key="transition_duration",
@@ -76,6 +81,7 @@ NUMBERS: tuple[AquaelNumberEntityDescription, ...] = (
         native_step=TRANSITION_STEP,
         native_unit_of_measurement="min",
         entity_category=EntityCategory.CONFIG,
+        icon="mdi:timer-sand",
         setter=_set_transition_duration,
     ),
     AquaelNumberEntityDescription(
@@ -87,6 +93,7 @@ NUMBERS: tuple[AquaelNumberEntityDescription, ...] = (
         native_step=WATT_STEP,
         native_unit_of_measurement=UnitOfPower.WATT,
         entity_category=EntityCategory.CONFIG,
+        icon="mdi:flash",
         setter=_set_max_power,
     ),
 )
@@ -113,5 +120,11 @@ class AquaelNumber(AquaelEntity, NumberEntity):
         return float(value)
 
     async def async_set_native_value(self, value: float) -> None:
-        await self.entity_description.setter(self, value)
-        await self.coordinator.async_request_refresh()
+        expected_value: int | float = int(value) if self.entity_description.native_step == 1 else float(value)
+
+        await self.coordinator.async_write_and_refresh(
+            lambda: self.entity_description.setter(self, value),
+            expected_key=self.entity_description.value_key,
+            expected_value=expected_value,
+            tolerance=self.entity_description.verify_tolerance,
+        )

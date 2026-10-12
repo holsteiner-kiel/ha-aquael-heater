@@ -22,6 +22,7 @@ SENSORS: tuple[AquaelSensorEntityDescription, ...] = (
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
+        icon="mdi:thermometer",
     ),
 )
 

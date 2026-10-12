@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.2.0
+
+- Move the mode selector to configuration entities.
+- Rename the disabled-by-default diagnostic temperature sensor to uncorrected temperature.
+- Refine icons for mode, power, calibration, transition duration, sunrise, sunset, and diagnostic temperature entities.
+- Improve entity availability by keeping short BLE interruptions quiet while marking data unavailable when it becomes stale.
+- Refresh and verify device state after write operations.
+- Add a Home Assistant repair issue for persistent Bluetooth communication failures.
+
 ## 0.1.6
 
 - Replace the broken/generated-looking brand icon with a cleaner Flow Heater focused design.
