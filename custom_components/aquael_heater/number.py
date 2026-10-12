@@ -25,7 +25,6 @@ from .entity import AquaelEntity
 
 @dataclass(frozen=True, kw_only=True)
 class AquaelNumberEntityDescription(NumberEntityDescription):
-    display_name: str
     value_key: str
     setter: Callable[[object, float], object]
 
@@ -49,8 +48,7 @@ async def _set_transition_duration(entity: object, value: float) -> None:
 NUMBERS: tuple[AquaelNumberEntityDescription, ...] = (
     AquaelNumberEntityDescription(
         key="night_temperature",
-        name="Aquael Flow Heater BT Night temperature",
-        display_name="Aquael Flow Heater BT Night temperature",
+        translation_key="night_temperature",
         value_key="night_temp_c",
         native_min_value=MIN_TEMP_C,
         native_max_value=MAX_TEMP_C,
@@ -59,20 +57,8 @@ NUMBERS: tuple[AquaelNumberEntityDescription, ...] = (
         setter=_set_night_temperature,
     ),
     AquaelNumberEntityDescription(
-        key="transition_duration",
-        name="Aquael Flow Heater BT Transition duration",
-        display_name="Aquael Flow Heater BT Transition duration",
-        value_key="transition_minutes",
-        native_min_value=MIN_TRANSITION_MINUTES,
-        native_max_value=MAX_TRANSITION_MINUTES,
-        native_step=TRANSITION_STEP,
-        native_unit_of_measurement="min",
-        setter=_set_transition_duration,
-    ),
-    AquaelNumberEntityDescription(
         key="temperature_calibration",
-        name="Aquael Flow Heater BT Temperature calibration",
-        display_name="Aquael Flow Heater BT Temperature calibration",
+        translation_key="temperature_calibration",
         value_key="calibration_c",
         native_min_value=MIN_CALIBRATION_C,
         native_max_value=MAX_CALIBRATION_C,
@@ -81,9 +67,18 @@ NUMBERS: tuple[AquaelNumberEntityDescription, ...] = (
         setter=_set_calibration,
     ),
     AquaelNumberEntityDescription(
+        key="transition_duration",
+        translation_key="transition_duration",
+        value_key="transition_minutes",
+        native_min_value=MIN_TRANSITION_MINUTES,
+        native_max_value=MAX_TRANSITION_MINUTES,
+        native_step=TRANSITION_STEP,
+        native_unit_of_measurement="min",
+        setter=_set_transition_duration,
+    ),
+    AquaelNumberEntityDescription(
         key="max_power",
-        name="Aquael Flow Heater BT Max power",
-        display_name="Aquael Flow Heater BT Max power",
+        translation_key="max_power",
         value_key="max_watt",
         native_min_value=MIN_WATT,
         native_max_value=MAX_WATT,
@@ -105,7 +100,7 @@ class AquaelNumber(AquaelEntity, NumberEntity):
     def __init__(self, coordinator, entry, description: AquaelNumberEntityDescription) -> None:
         super().__init__(coordinator, entry, description.key)
         self.entity_description = description
-        self._attr_name = description.display_name
+        self._attr_translation_key = description.translation_key
 
     @property
     def native_value(self) -> float | None:
