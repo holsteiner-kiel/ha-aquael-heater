@@ -1,0 +1,19 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Aquael Heater",
+        "description": "Gib die BLE-Adresse deines Aquael Flow Heater BT ein.",
+        "data": {
+          "address": "BLE-Adresse"
+        }
+      }
+    },
+    "error": {
+      "invalid_address": "Die BLE-Adresse ist ungültig. Nutze das Format AA:BB:CC:DD:EE:FF."
+    },
+    "abort": {
+      "already_configured": "Dieser Aquael-Heizer ist bereits eingerichtet."
+    }
+  }
+}
