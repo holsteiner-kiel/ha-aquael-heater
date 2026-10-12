@@ -10,7 +10,7 @@ from .coordinator import AquaelDataUpdateCoordinator
 class AquaelEntity(CoordinatorEntity[AquaelDataUpdateCoordinator]):
     """Base class for Aquael entities."""
 
-    _attr_has_entity_name = False
+    _attr_has_entity_name = True
 
     def __init__(self, coordinator: AquaelDataUpdateCoordinator, entry, key: str) -> None:
         super().__init__(coordinator)
