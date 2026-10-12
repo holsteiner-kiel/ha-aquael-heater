@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.2
+
+- Add retries for temporary BLE read failures.
+- Keep the last known state when a later polling update fails temporarily.
+
 ## 0.1.1
 
 - Fix options flow crash when opening the integration configuration dialog.
