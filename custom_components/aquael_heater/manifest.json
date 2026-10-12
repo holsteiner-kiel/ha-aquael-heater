@@ -11,6 +11,7 @@
   "requirements": ["bleak-retry-connector>=4.4.3"],
   "codeowners": ["@holsteiner-kiel"],
   "config_flow": true,
+  "documentation": "https://github.com/holsteiner-kiel/ha-aquael-heater",
   "iot_class": "local_polling",
   "version": "0.1.0"
 }
