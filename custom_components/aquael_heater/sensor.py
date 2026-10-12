@@ -11,14 +11,15 @@ from .entity import AquaelEntity
 
 @dataclass(frozen=True, kw_only=True)
 class AquaelSensorEntityDescription(SensorEntityDescription):
+    display_name: str
     value_key: str
 
 
 SENSORS: tuple[AquaelSensorEntityDescription, ...] = (
     AquaelSensorEntityDescription(
         key="raw_temperature",
-        name="Raw temperature",
-        translation_key="raw_temperature",
+        name="Aquael Flow Heater BT Raw temperature",
+        display_name="Aquael Flow Heater BT Raw temperature",
         value_key="current_temp_raw_c",
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         entity_category=EntityCategory.DIAGNOSTIC,
@@ -26,8 +27,8 @@ SENSORS: tuple[AquaelSensorEntityDescription, ...] = (
     ),
     AquaelSensorEntityDescription(
         key="night_temperature",
-        name="Night temperature",
-        translation_key="night_temperature",
+        name="Aquael Flow Heater BT Night temperature",
+        display_name="Aquael Flow Heater BT Night temperature",
         value_key="night_temp_c",
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         entity_category=EntityCategory.DIAGNOSTIC,
@@ -35,8 +36,8 @@ SENSORS: tuple[AquaelSensorEntityDescription, ...] = (
     ),
     AquaelSensorEntityDescription(
         key="sunrise_minutes",
-        name="Sunrise",
-        translation_key="sunrise_minutes",
+        name="Aquael Flow Heater BT Sunrise",
+        display_name="Aquael Flow Heater BT Sunrise",
         value_key="sunrise_minutes",
         native_unit_of_measurement="min",
         entity_category=EntityCategory.DIAGNOSTIC,
@@ -44,8 +45,8 @@ SENSORS: tuple[AquaelSensorEntityDescription, ...] = (
     ),
     AquaelSensorEntityDescription(
         key="sunset_minutes",
-        name="Sunset",
-        translation_key="sunset_minutes",
+        name="Aquael Flow Heater BT Sunset",
+        display_name="Aquael Flow Heater BT Sunset",
         value_key="sunset_minutes",
         native_unit_of_measurement="min",
         entity_category=EntityCategory.DIAGNOSTIC,
@@ -53,8 +54,8 @@ SENSORS: tuple[AquaelSensorEntityDescription, ...] = (
     ),
     AquaelSensorEntityDescription(
         key="transition_minutes",
-        name="Transition duration",
-        translation_key="transition_minutes",
+        name="Aquael Flow Heater BT Transition duration",
+        display_name="Aquael Flow Heater BT Transition duration",
         value_key="transition_minutes",
         native_unit_of_measurement="min",
         entity_category=EntityCategory.DIAGNOSTIC,
@@ -74,8 +75,7 @@ class AquaelSensor(AquaelEntity, SensorEntity):
     def __init__(self, coordinator, entry, description: AquaelSensorEntityDescription) -> None:
         super().__init__(coordinator, entry, description.key)
         self.entity_description = description
-        self._attr_name = description.name
-        self._attr_translation_key = description.translation_key
+        self._attr_name = description.display_name
 
     @property
     def native_value(self) -> Any:
