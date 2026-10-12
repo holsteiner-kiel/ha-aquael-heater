@@ -22,5 +22,16 @@
     "abort": {
       "already_configured": "This Aquael heater is already configured."
     }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Aquael Heater options",
+        "description": "Configure how often Home Assistant reads the heater state.",
+        "data": {
+          "poll_interval": "Polling interval"
+        }
+      }
+    }
   }
 }
