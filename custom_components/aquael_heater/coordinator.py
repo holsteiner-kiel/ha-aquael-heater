@@ -9,7 +9,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .ble import AquaelBluetoothClient
-from .const import CONF_ADDRESS, DEFAULT_POLL_INTERVAL, DOMAIN
+from .const import CONF_ADDRESS, CONF_POLL_INTERVAL, DEFAULT_POLL_INTERVAL, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -20,12 +20,13 @@ class AquaelDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
         self.entry = entry
         self.client = AquaelBluetoothClient(hass, entry.data[CONF_ADDRESS])
+        poll_interval = int(entry.options.get(CONF_POLL_INTERVAL, DEFAULT_POLL_INTERVAL))
 
         super().__init__(
             hass,
             _LOGGER,
             name=DOMAIN,
-            update_interval=timedelta(seconds=DEFAULT_POLL_INTERVAL),
+            update_interval=timedelta(seconds=poll_interval),
         )
 
     async def _async_update_data(self) -> dict[str, Any]:
