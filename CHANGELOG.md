@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.5
+
+- Move advanced heater controls to the configuration section.
+- Replace the integration icon with a new aquarium and smart-home themed icon.
+- Add a README banner image.
+- Update the README branding and feature description.
+
 ## 0.1.4
 
 - Improve German entity translations.

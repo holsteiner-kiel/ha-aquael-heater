@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="500" viewBox="0 0 1600 500" role="img" aria-label="Aquael Heater Home Assistant integration banner">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#061526"/>
+      <stop offset="0.55" stop-color="#0a2340"/>
+      <stop offset="1" stop-color="#03111f"/>
+    </linearGradient>
+    <linearGradient id="water" x1="0" x2="1">
+      <stop offset="0" stop-color="#00d4ff"/>
+      <stop offset="1" stop-color="#0064b7"/>
+    </linearGradient>
+    <linearGradient id="heat" y1="0" y2="1">
+      <stop offset="0" stop-color="#ffcf4a"/>
+      <stop offset="0.5" stop-color="#ff7b1a"/>
+      <stop offset="1" stop-color="#ff3b1a"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="1600" height="500" fill="url(#bg)"/>
+  <circle cx="1240" cy="110" r="260" fill="#0a7fc0" opacity="0.13"/>
+  <circle cx="420" cy="420" r="340" fill="#00bfff" opacity="0.10"/>
+
+  <!-- aquarium -->
+  <g transform="translate(80 165)">
+    <rect x="0" y="0" width="560" height="260" rx="24" fill="#06345a" stroke="#63e6ff" stroke-width="6"/>
+    <path d="M8 72 C90 38 160 103 246 68 C334 32 404 99 552 55 L552 251 L8 251Z" fill="url(#water)" opacity="0.9"/>
+    <path d="M12 72 C92 42 160 105 246 70 C334 35 404 101 548 58" fill="none" stroke="#bff8ff" stroke-width="5" opacity="0.8"/>
+    <g fill="#57d978">
+      <path d="M55 242 C72 180 96 156 112 115 C118 178 103 214 80 242Z"/>
+      <path d="M105 242 C133 192 164 172 190 140 C181 196 159 224 130 242Z"/>
+      <path d="M445 242 C462 184 486 154 512 126 C508 191 486 226 464 242Z"/>
+    </g>
+    <g fill="#8195a8" opacity="0.8">
+      <ellipse cx="80" cy="246" rx="38" ry="13"/><ellipse cx="135" cy="246" rx="42" ry="15"/><ellipse cx="445" cy="246" rx="55" ry="16"/><ellipse cx="510" cy="246" rx="34" ry="12"/>
+    </g>
+    <g transform="translate(250 20)">
+      <path d="M43 4 C46 -24 86 -24 89 4" fill="none" stroke="#0b1e33" stroke-width="14" stroke-linecap="round"/>
+      <rect x="25" y="0" width="82" height="212" rx="36" fill="#0b1e33"/>
+      <rect x="42" y="32" width="48" height="160" rx="22" fill="#bcefff" opacity="0.72"/>
+      <rect x="58" y="56" width="16" height="114" rx="8" fill="url(#heat)" filter="url(#glow)"/>
+      <rect x="16" y="22" width="100" height="44" rx="16" fill="#142b45"/>
+      <circle cx="21" cy="122" r="22" fill="#13283f"/><circle cx="111" cy="122" r="22" fill="#13283f"/>
+    </g>
+    <g transform="translate(165 122)">
+      <ellipse cx="32" cy="21" rx="35" ry="20" fill="#ffb12b"/>
+      <path d="M0 20 L-34 0 L-28 39Z" fill="#ff7b1a"/>
+      <circle cx="50" cy="17" r="4" fill="#0a1c2d"/>
+    </g>
+    <circle cx="205" cy="80" r="8" fill="#c9fbff"/><circle cx="225" cy="54" r="12" fill="#c9fbff" opacity="0.8"/><circle cx="515" cy="95" r="10" fill="#c9fbff" opacity="0.8"/>
+  </g>
+
+  <!-- home assistant / dashboard cue -->
+  <g transform="translate(1110 155)">
+    <rect x="0" y="0" width="380" height="250" rx="28" fill="#071b2f" stroke="#1e8bc3" stroke-width="3" opacity="0.95"/>
+    <rect x="30" y="35" width="150" height="82" rx="14" fill="#0c2944" stroke="#1b80b5"/>
+    <text x="55" y="68" font-family="Inter,Segoe UI,Arial" font-size="18" fill="#b9d8e7">Current</text>
+    <text x="55" y="105" font-family="Inter,Segoe UI,Arial" font-size="34" fill="#ffffff">24.8°C</text>
+    <rect x="205" y="35" width="145" height="82" rx="14" fill="#0c2944" stroke="#1b80b5"/>
+    <text x="230" y="68" font-family="Inter,Segoe UI,Arial" font-size="18" fill="#b9d8e7">Heater</text>
+    <text x="230" y="105" font-family="Inter,Segoe UI,Arial" font-size="34" fill="#ff9b2d">On</text>
+    <path d="M36 178 C90 128 136 211 198 170 C258 132 294 192 350 150" fill="none" stroke="#19c7ff" stroke-width="6" stroke-linecap="round"/>
+    <path d="M36 190 C90 156 136 202 198 184 C258 162 294 182 350 160" fill="none" stroke="#ff9b2d" stroke-width="4" stroke-dasharray="10 10" opacity="0.8"/>
+  </g>
+
+  <!-- title -->
+  <g transform="translate(690 120)">
+    <path d="M30 62 L98 8 L166 62" fill="none" stroke="#20c7ff" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M72 92 C92 108 117 108 136 92" fill="none" stroke="#20c7ff" stroke-width="10" stroke-linecap="round"/>
+    <rect x="94" y="45" width="18" height="74" rx="9" fill="#ff7b1a"/>
+    <circle cx="103" cy="123" r="18" fill="#ff7b1a"/>
+    <text x="205" y="76" font-family="Inter,Segoe UI,Arial" font-size="72" font-weight="800" fill="#ffffff">Aquael</text>
+    <text x="205" y="150" font-family="Inter,Segoe UI,Arial" font-size="72" font-weight="800" fill="#1fd2ff">Heater</text>
+    <text x="205" y="206" font-family="Inter,Segoe UI,Arial" font-size="28" fill="#c7d9e6">Home Assistant custom integration for Aquael Flow Heater BT</text>
+  </g>
+</svg>
