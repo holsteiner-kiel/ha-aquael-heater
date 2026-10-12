@@ -22,5 +22,16 @@
     "abort": {
       "already_configured": "Dieser Aquael-Heizer ist bereits eingerichtet."
     }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Aquael Heater Optionen",
+        "description": "Lege fest, wie oft Home Assistant den Status des Heizers ausliest.",
+        "data": {
+          "poll_interval": "Abfrageintervall"
+        }
+      }
+    }
   }
 }
