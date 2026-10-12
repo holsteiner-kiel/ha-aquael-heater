@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.4
 
 - Improve German entity translations.
 - Use Home Assistant entity translation keys for heater controls.
