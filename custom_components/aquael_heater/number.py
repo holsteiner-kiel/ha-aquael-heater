@@ -59,17 +59,6 @@ NUMBERS: tuple[AquaelNumberEntityDescription, ...] = (
         setter=_set_max_power,
     ),
     AquaelNumberEntityDescription(
-        key="temperature_calibration",
-        name="Aquael Flow Heater BT Temperature calibration",
-        display_name="Aquael Flow Heater BT Temperature calibration",
-        value_key="calibration_c",
-        native_min_value=MIN_CALIBRATION_C,
-        native_max_value=MAX_CALIBRATION_C,
-        native_step=CALIBRATION_STEP,
-        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
-        setter=_set_calibration,
-    ),
-    AquaelNumberEntityDescription(
         key="night_temperature",
         name="Aquael Flow Heater BT Night temperature",
         display_name="Aquael Flow Heater BT Night temperature",
@@ -90,6 +79,17 @@ NUMBERS: tuple[AquaelNumberEntityDescription, ...] = (
         native_step=TRANSITION_STEP,
         native_unit_of_measurement="min",
         setter=_set_transition_duration,
+    ),
+    AquaelNumberEntityDescription(
+        key="temperature_calibration",
+        name="Aquael Flow Heater BT Temperature calibration",
+        display_name="Aquael Flow Heater BT Temperature calibration",
+        value_key="calibration_c",
+        native_min_value=MIN_CALIBRATION_C,
+        native_max_value=MAX_CALIBRATION_C,
+        native_step=CALIBRATION_STEP,
+        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+        setter=_set_calibration,
     ),
 )
 
