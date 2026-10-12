@@ -2,7 +2,8 @@
 
 ## 0.1.6
 
-- Replace the Home Assistant brand icon PNG with the new Flow Heater focused design.
+- Replace the broken/generated-looking brand icon with a cleaner Flow Heater focused design.
+- No integration logic changes.
 
 ## 0.1.5
 
