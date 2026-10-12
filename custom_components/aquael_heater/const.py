@@ -5,10 +5,10 @@ from homeassistant.const import Platform
 DOMAIN = "aquael_heater"
 PLATFORMS: list[Platform] = [
     Platform.CLIMATE,
-    Platform.NUMBER,
     Platform.SELECT,
-    Platform.SENSOR,
+    Platform.NUMBER,
     Platform.TIME,
+    Platform.SENSOR,
 ]
 
 DEFAULT_NAME = "Aquael Flow Heater BT"
