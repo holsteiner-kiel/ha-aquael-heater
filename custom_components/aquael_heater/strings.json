@@ -45,18 +45,6 @@
     "sensor": {
       "raw_temperature": {
         "name": "Raw temperature"
-      },
-      "night_temperature": {
-        "name": "Night temperature"
-      },
-      "sunrise": {
-        "name": "Sunrise"
-      },
-      "sunset": {
-        "name": "Sunset"
-      },
-      "transition_minutes": {
-        "name": "Transition duration"
       }
     }
   }
