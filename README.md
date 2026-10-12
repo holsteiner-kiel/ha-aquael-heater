@@ -68,15 +68,9 @@ Disabled by default:
 - Transition minutes sensor
 - Night temperature sensor
 
-## Migration from MQTT bridge
+## Important notes
 
-Do not run an existing BLE/MQTT bridge and this integration at the same time. BLE devices often only allow one active connection.
-
-During testing, stop the old bridge first:
-
-```bash
-sudo systemctl stop aquael-heater.service
-```
+The heater is controlled through active BLE/GATT read and write operations. Avoid using the official mobile app at the same time as this integration, because the heater may only accept one active BLE connection.
 
 ## Status
 
