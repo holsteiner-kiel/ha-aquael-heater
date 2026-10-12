@@ -3,7 +3,7 @@
 ## 0.1.3
 
 - Replace the empty brand icon with a visible integration icon.
-- Reorder number entities so temperature calibration appears below transition duration.
+- Reorder number entities so temperature calibration appears below transition duration and max power appears last.
 
 ## 0.1.2
 
