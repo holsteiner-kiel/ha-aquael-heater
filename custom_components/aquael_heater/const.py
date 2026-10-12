@@ -8,6 +8,7 @@ PLATFORMS: list[Platform] = [
     Platform.NUMBER,
     Platform.SELECT,
     Platform.SENSOR,
+    Platform.TIME,
 ]
 
 DEFAULT_NAME = "Aquael Flow Heater BT"
@@ -30,6 +31,10 @@ MIN_WATT = 50
 MAX_WATT = 500
 WATT_STEP = 50
 VALID_WATTS = (50, 100, 150, 200, 250, 300, 350, 400, 450, 500)
+
+MIN_TRANSITION_MINUTES = 0
+MAX_TRANSITION_MINUTES = 1440
+TRANSITION_STEP = 5
 
 MODE_FIXED = "fixed"
 MODE_DAY_NIGHT = "day_night"
