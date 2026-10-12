@@ -7,10 +7,7 @@ from .const import DOMAIN, PLATFORMS
 from .coordinator import AquaelDataUpdateCoordinator
 
 
-type AquaelConfigEntry = ConfigEntry[AquaelDataUpdateCoordinator]
-
-
-async def async_setup_entry(hass: HomeAssistant, entry: AquaelConfigEntry) -> bool:
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     coordinator = AquaelDataUpdateCoordinator(hass, entry)
     await coordinator.async_config_entry_first_refresh()
 
@@ -21,7 +18,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: AquaelConfigEntry) -> bo
     return True
 
 
-async def async_unload_entry(hass: HomeAssistant, entry: AquaelConfigEntry) -> bool:
+async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
 
     if unload_ok:
