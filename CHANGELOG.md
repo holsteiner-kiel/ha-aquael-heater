@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.5
+
+- Fix reload handling after integration option changes.
+- Fix coordinator config entry handling for `async_config_entry_first_refresh`.
+
 ## 0.1.4
 
 - Improve German entity translations.
