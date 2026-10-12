@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any
 
@@ -9,10 +10,22 @@ from homeassistant.const import EntityCategory, UnitOfTemperature
 from .entity import AquaelEntity
 
 
+def minutes_to_hhmm(value: Any) -> str | None:
+    if value is None:
+        return None
+
+    minutes = int(value)
+    minutes = max(0, min(1439, minutes))
+    hours = minutes // 60
+    mins = minutes % 60
+    return f"{hours:02d}:{mins:02d}"
+
+
 @dataclass(frozen=True, kw_only=True)
 class AquaelSensorEntityDescription(SensorEntityDescription):
     display_name: str
     value_key: str
+    formatter: Callable[[Any], Any] | None = None
 
 
 SENSORS: tuple[AquaelSensorEntityDescription, ...] = (
@@ -35,20 +48,20 @@ SENSORS: tuple[AquaelSensorEntityDescription, ...] = (
         entity_registry_enabled_default=False,
     ),
     AquaelSensorEntityDescription(
-        key="sunrise_minutes",
+        key="sunrise",
         name="Aquael Flow Heater BT Sunrise",
         display_name="Aquael Flow Heater BT Sunrise",
         value_key="sunrise_minutes",
-        native_unit_of_measurement="min",
+        formatter=minutes_to_hhmm,
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
     ),
     AquaelSensorEntityDescription(
-        key="sunset_minutes",
+        key="sunset",
         name="Aquael Flow Heater BT Sunset",
         display_name="Aquael Flow Heater BT Sunset",
         value_key="sunset_minutes",
-        native_unit_of_measurement="min",
+        formatter=minutes_to_hhmm,
         entity_category=EntityCategory.DIAGNOSTIC,
         entity_registry_enabled_default=False,
     ),
@@ -79,4 +92,7 @@ class AquaelSensor(AquaelEntity, SensorEntity):
 
     @property
     def native_value(self) -> Any:
-        return self.coordinator.data.get(self.entity_description.value_key)
+        value = self.coordinator.data.get(self.entity_description.value_key)
+        if self.entity_description.formatter is not None:
+            return self.entity_description.formatter(value)
+        return value
