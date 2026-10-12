@@ -190,3 +190,12 @@ class AquaelBluetoothClient:
 
     async def set_mode(self, mode: str) -> None:
         await self.write_char(UUID_MODE, mode_to_device(mode))
+
+    async def set_sunrise_minutes(self, minutes: int) -> None:
+        await self.write_char(UUID_SUNRISE, minutes_to_device(minutes))
+
+    async def set_sunset_minutes(self, minutes: int) -> None:
+        await self.write_char(UUID_SUNSET, minutes_to_device(minutes))
+
+    async def set_transition_minutes(self, minutes: int) -> None:
+        await self.write_char(UUID_TRANSITION_MINUTES, minutes_to_device(minutes))
