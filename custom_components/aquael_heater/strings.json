@@ -65,7 +65,7 @@
     },
     "sensor": {
       "raw_temperature": {
-        "name": "Raw temperature"
+        "name": "Uncorrected temperature"
       }
     },
     "time": {
@@ -75,6 +75,12 @@
       "sunset": {
         "name": "Sunset"
       }
+    }
+  },
+  "issues": {
+    "ble_unavailable": {
+      "title": "Aquael Heater is not reachable",
+      "description": "Home Assistant cannot currently read {device} over Bluetooth. Check that the heater is powered, nearby Bluetooth proxies are available, and the BLE connection is not blocked. Last error: {error}"
     }
   }
 }
