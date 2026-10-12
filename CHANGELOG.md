@@ -13,6 +13,7 @@
 - Add sunrise and sunset time controls
 - Add transition duration control
 - Add temperature calibration control
+- Add configurable polling interval option
 - Add raw temperature as disabled-by-default diagnostic sensor
 - Add diagnostics support
 - Add English and German config flow translations
