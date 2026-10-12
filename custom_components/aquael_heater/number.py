@@ -48,17 +48,6 @@ async def _set_transition_duration(entity: object, value: float) -> None:
 
 NUMBERS: tuple[AquaelNumberEntityDescription, ...] = (
     AquaelNumberEntityDescription(
-        key="max_power",
-        name="Aquael Flow Heater BT Max power",
-        display_name="Aquael Flow Heater BT Max power",
-        value_key="max_watt",
-        native_min_value=MIN_WATT,
-        native_max_value=MAX_WATT,
-        native_step=WATT_STEP,
-        native_unit_of_measurement=UnitOfPower.WATT,
-        setter=_set_max_power,
-    ),
-    AquaelNumberEntityDescription(
         key="night_temperature",
         name="Aquael Flow Heater BT Night temperature",
         display_name="Aquael Flow Heater BT Night temperature",
@@ -90,6 +79,17 @@ NUMBERS: tuple[AquaelNumberEntityDescription, ...] = (
         native_step=CALIBRATION_STEP,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         setter=_set_calibration,
+    ),
+    AquaelNumberEntityDescription(
+        key="max_power",
+        name="Aquael Flow Heater BT Max power",
+        display_name="Aquael Flow Heater BT Max power",
+        value_key="max_watt",
+        native_min_value=MIN_WATT,
+        native_max_value=MAX_WATT,
+        native_step=WATT_STEP,
+        native_unit_of_measurement=UnitOfPower.WATT,
+        setter=_set_max_power,
     ),
 )
 
