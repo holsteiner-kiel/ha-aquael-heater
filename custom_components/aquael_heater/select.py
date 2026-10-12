@@ -16,6 +16,7 @@ class AquaelModeSelect(AquaelEntity, SelectEntity):
 
     def __init__(self, coordinator, entry) -> None:
         super().__init__(coordinator, entry, "mode")
+        self._attr_name = "Mode"
         self._attr_translation_key = "mode"
         self._attr_options = list(MODES)
 
