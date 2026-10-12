@@ -45,15 +45,24 @@ class AquaelHeaterClimate(AquaelEntity, ClimateEntity):
         if temperature is None:
             return
 
-        await self.coordinator.client.set_target_temperature(float(temperature))
-        await self.coordinator.async_request_refresh()
+        target_temperature = float(temperature)
+        await self.coordinator.async_write_and_refresh(
+            lambda: self.coordinator.client.set_target_temperature(target_temperature),
+            expected_key="day_or_fixed_temp_c",
+            expected_value=target_temperature,
+            tolerance=0.05,
+        )
 
     async def async_set_hvac_mode(self, hvac_mode: HVACMode) -> None:
         if hvac_mode == HVACMode.HEAT:
-            await self.coordinator.client.set_enabled(True)
+            enabled = True
         elif hvac_mode == HVACMode.OFF:
-            await self.coordinator.client.set_enabled(False)
+            enabled = False
         else:
             return
 
-        await self.coordinator.async_request_refresh()
+        await self.coordinator.async_write_and_refresh(
+            lambda: self.coordinator.client.set_enabled(enabled),
+            expected_key="enabled",
+            expected_value=enabled,
+        )
