@@ -9,9 +9,15 @@ from homeassistant.const import UnitOfPower, UnitOfTemperature
 from .const import (
     CALIBRATION_STEP,
     MAX_CALIBRATION_C,
+    MAX_TEMP_C,
+    MAX_TRANSITION_MINUTES,
     MAX_WATT,
     MIN_CALIBRATION_C,
+    MIN_TEMP_C,
+    MIN_TRANSITION_MINUTES,
     MIN_WATT,
+    TEMP_STEP,
+    TRANSITION_STEP,
     WATT_STEP,
 )
 from .entity import AquaelEntity
@@ -30,6 +36,14 @@ async def _set_max_power(entity: object, value: float) -> None:
 
 async def _set_calibration(entity: object, value: float) -> None:
     await entity.coordinator.client.set_calibration(float(value))
+
+
+async def _set_night_temperature(entity: object, value: float) -> None:
+    await entity.coordinator.client.set_night_temperature(float(value))
+
+
+async def _set_transition_duration(entity: object, value: float) -> None:
+    await entity.coordinator.client.set_transition_minutes(int(value))
 
 
 NUMBERS: tuple[AquaelNumberEntityDescription, ...] = (
@@ -54,6 +68,28 @@ NUMBERS: tuple[AquaelNumberEntityDescription, ...] = (
         native_step=CALIBRATION_STEP,
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         setter=_set_calibration,
+    ),
+    AquaelNumberEntityDescription(
+        key="night_temperature",
+        name="Aquael Flow Heater BT Night temperature",
+        display_name="Aquael Flow Heater BT Night temperature",
+        value_key="night_temp_c",
+        native_min_value=MIN_TEMP_C,
+        native_max_value=MAX_TEMP_C,
+        native_step=TEMP_STEP,
+        native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+        setter=_set_night_temperature,
+    ),
+    AquaelNumberEntityDescription(
+        key="transition_duration",
+        name="Aquael Flow Heater BT Transition duration",
+        display_name="Aquael Flow Heater BT Transition duration",
+        value_key="transition_minutes",
+        native_min_value=MIN_TRANSITION_MINUTES,
+        native_max_value=MAX_TRANSITION_MINUTES,
+        native_step=TRANSITION_STEP,
+        native_unit_of_measurement="min",
+        setter=_set_transition_duration,
     ),
 )
 
