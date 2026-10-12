@@ -21,53 +21,39 @@ Home Assistant custom integration for the **Aquael Flow Heater BT** using Home A
 ## Requirements
 
 - Home Assistant with Bluetooth support
-- A connectable Bluetooth adapter or ESPHome Bluetooth Proxy with active connections enabled
-- Aquael Flow Heater BT
-
-Recommended ESPHome Bluetooth Proxy configuration:
+- A Bluetooth adapter supported by Home Assistant, or an ESPHome Bluetooth Proxy
+- For ESPHome Bluetooth Proxy, active connections must be enabled:
 
 ```yaml
-esp32_ble_tracker:
-
 bluetooth_proxy:
   active: true
 ```
 
-Shelly Bluetooth proxies may expose advertisements but are not expected to support the active GATT read/write workflow required by this integration.
+## Installation via HACS custom repository
 
-## Installation
-
-### HACS custom repository
-
-1. Open HACS.
-2. Add this repository as a custom repository.
-3. Category: Integration.
-4. Install **Aquael Heater**.
-5. Restart Home Assistant.
-
-### Manual installation
-
-Copy `custom_components/aquael_heater` into your Home Assistant `custom_components` directory and restart Home Assistant.
+1. Open HACS
+2. Go to **Integrations**
+3. Open the three-dot menu
+4. Choose **Custom repositories**
+5. Add this repository URL
+6. Category: **Integration**
+7. Install **Aquael Heater**
+8. Restart Home Assistant
+9. Add the integration from **Settings → Devices & services**
 
 ## Setup
 
-Home Assistant should discover the heater when it sees a connectable BLE advertisement named `Flow Heater BT`.
-
-You can also add the integration manually. The setup flow scans for discovered heaters and also offers manual BLE address entry as a fallback.
-
-Bluetooth discovery only presents the heater for confirmation. It does not silently create a config entry without user interaction.
-
-## Options
-
-The polling interval can be changed from the integration options:
+The integration supports Bluetooth discovery for devices advertising as:
 
 ```text
-Settings → Devices & services → Aquael Heater → Configure
+Flow Heater BT
 ```
 
-Default: `30 s`
-Minimum: `15 s`
-Maximum: `300 s`
+If discovery does not find the device, you can add it manually by BLE address, for example:
+
+```text
+AA:BB:CC:DD:EE:FF
+```
 
 ## Entities
 
@@ -89,11 +75,9 @@ Disabled by default:
 
 - `sensor` - Raw temperature
 
-## Important notes
+## Notes
 
-The heater is controlled through active BLE/GATT read and write operations. Avoid using the official mobile app at the same time as this integration, because the heater may only accept one active BLE connection.
-
-The integration has currently only been tested with one Aquael Flow Heater BT. Multiple heaters should work in principle because entries are keyed by BLE address, but this is not yet tested.
+The integration has currently only been tested with one Aquael Flow Heater BT. Multiple heater support is not a goal for the initial release.
 
 ## Status
 
@@ -102,11 +86,7 @@ Current 0.1.x status:
 - HACS custom repository installation: tested
 - Bluetooth discovery: tested
 - Manual setup: tested
-- Read over ESPHome Bluetooth Proxy: tested
-- Write over ESPHome Bluetooth Proxy: tested
 - Climate entity: tested
-- Day/night control entities: tested visually, further runtime testing welcome
-
-## Disclaimer
-
-This project is not affiliated with AQUAEL. The protocol details are based on community testing and reverse engineering.
+- Max power write: tested
+- Options flow: tested
+- Long-term Bluetooth stability: under observation
