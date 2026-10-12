@@ -1,0 +1,16 @@
+{
+  "domain": "aquael_heater",
+  "name": "Aquael Heater",
+  "bluetooth": [
+    {
+      "local_name": "Flow Heater BT",
+      "connectable": true
+    }
+  ],
+  "dependencies": ["bluetooth_adapters"],
+  "requirements": ["bleak-retry-connector>=4.4.3"],
+  "codeowners": ["@holsteiner-kiel"],
+  "config_flow": true,
+  "iot_class": "local_polling",
+  "version": "0.1.0"
+}
