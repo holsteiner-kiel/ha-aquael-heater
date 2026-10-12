@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.4
+
+- Improve German entity translations.
+- Use Home Assistant entity translation keys for heater controls.
+- Adjust preferred number entity ordering.
+
 ## 0.1.3
 
 - Replace the empty brand icon with a visible integration icon.

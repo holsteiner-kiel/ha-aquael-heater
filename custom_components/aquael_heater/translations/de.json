@@ -33,5 +33,48 @@
         }
       }
     }
+  },
+  "entity": {
+    "climate": {
+      "heater": {
+        "name": "Heizer"
+      }
+    },
+    "number": {
+      "night_temperature": {
+        "name": "Nachttemperatur"
+      },
+      "temperature_calibration": {
+        "name": "Temperaturkalibrierung"
+      },
+      "transition_duration": {
+        "name": "Übergangsdauer"
+      },
+      "max_power": {
+        "name": "Maximale Leistung"
+      }
+    },
+    "select": {
+      "mode": {
+        "name": "Modus",
+        "state": {
+          "fixed": "Fest",
+          "day_night": "Tag/Nacht"
+        }
+      }
+    },
+    "sensor": {
+      "raw_temperature": {
+        "name": "Rohtemperatur"
+      }
+    },
+    "time": {
+      "sunrise": {
+        "name": "Sonnenaufgang"
+      },
+      "sunset": {
+        "name": "Sonnenuntergang"
+      }
+    }
   }
 }

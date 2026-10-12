@@ -37,26 +37,30 @@
   "entity": {
     "climate": {
       "heater": {
-        "name": "Flow Heater BT"
+        "name": "Heater"
       }
     },
     "number": {
-      "max_power": {
-        "name": "Max power"
+      "night_temperature": {
+        "name": "Night temperature"
       },
       "temperature_calibration": {
         "name": "Temperature calibration"
       },
-      "night_temperature": {
-        "name": "Night temperature"
-      },
       "transition_duration": {
         "name": "Transition duration"
+      },
+      "max_power": {
+        "name": "Maximum power"
       }
     },
     "select": {
       "mode": {
-        "name": "Mode"
+        "name": "Mode",
+        "state": {
+          "fixed": "Fixed",
+          "day_night": "Day/night"
+        }
       }
     },
     "sensor": {

@@ -11,15 +11,13 @@ from .entity import AquaelEntity
 
 @dataclass(frozen=True, kw_only=True)
 class AquaelSensorEntityDescription(SensorEntityDescription):
-    display_name: str
     value_key: str
 
 
 SENSORS: tuple[AquaelSensorEntityDescription, ...] = (
     AquaelSensorEntityDescription(
         key="raw_temperature",
-        name="Aquael Flow Heater BT Raw temperature",
-        display_name="Aquael Flow Heater BT Raw temperature",
+        translation_key="raw_temperature",
         value_key="current_temp_raw_c",
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         entity_category=EntityCategory.DIAGNOSTIC,
@@ -39,7 +37,7 @@ class AquaelSensor(AquaelEntity, SensorEntity):
     def __init__(self, coordinator, entry, description: AquaelSensorEntityDescription) -> None:
         super().__init__(coordinator, entry, description.key)
         self.entity_description = description
-        self._attr_name = description.display_name
+        self._attr_translation_key = description.translation_key
 
     @property
     def native_value(self) -> Any:
