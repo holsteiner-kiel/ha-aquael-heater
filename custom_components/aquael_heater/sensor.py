@@ -17,6 +17,7 @@ class AquaelSensorEntityDescription(SensorEntityDescription):
 SENSORS: tuple[AquaelSensorEntityDescription, ...] = (
     AquaelSensorEntityDescription(
         key="raw_temperature",
+        name="Raw temperature",
         translation_key="raw_temperature",
         value_key="current_temp_raw_c",
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
@@ -25,6 +26,7 @@ SENSORS: tuple[AquaelSensorEntityDescription, ...] = (
     ),
     AquaelSensorEntityDescription(
         key="night_temperature",
+        name="Night temperature",
         translation_key="night_temperature",
         value_key="night_temp_c",
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
@@ -33,6 +35,7 @@ SENSORS: tuple[AquaelSensorEntityDescription, ...] = (
     ),
     AquaelSensorEntityDescription(
         key="sunrise_minutes",
+        name="Sunrise",
         translation_key="sunrise_minutes",
         value_key="sunrise_minutes",
         native_unit_of_measurement="min",
@@ -41,6 +44,7 @@ SENSORS: tuple[AquaelSensorEntityDescription, ...] = (
     ),
     AquaelSensorEntityDescription(
         key="sunset_minutes",
+        name="Sunset",
         translation_key="sunset_minutes",
         value_key="sunset_minutes",
         native_unit_of_measurement="min",
@@ -49,6 +53,7 @@ SENSORS: tuple[AquaelSensorEntityDescription, ...] = (
     ),
     AquaelSensorEntityDescription(
         key="transition_minutes",
+        name="Transition duration",
         translation_key="transition_minutes",
         value_key="transition_minutes",
         native_unit_of_measurement="min",
@@ -69,6 +74,8 @@ class AquaelSensor(AquaelEntity, SensorEntity):
     def __init__(self, coordinator, entry, description: AquaelSensorEntityDescription) -> None:
         super().__init__(coordinator, entry, description.key)
         self.entity_description = description
+        self._attr_name = description.name
+        self._attr_translation_key = description.translation_key
 
     @property
     def native_value(self) -> Any:
