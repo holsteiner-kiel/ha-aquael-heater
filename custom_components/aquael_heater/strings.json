@@ -1,0 +1,56 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Aquael Heater",
+        "description": "Enter the BLE address of your Aquael Flow Heater BT.",
+        "data": {
+          "address": "BLE address"
+        }
+      }
+    },
+    "error": {
+      "invalid_address": "The BLE address is invalid. Use the format AA:BB:CC:DD:EE:FF."
+    },
+    "abort": {
+      "already_configured": "This Aquael heater is already configured."
+    }
+  },
+  "entity": {
+    "climate": {
+      "heater": {
+        "name": "Flow Heater BT"
+      }
+    },
+    "number": {
+      "max_power": {
+        "name": "Max power"
+      },
+      "temperature_calibration": {
+        "name": "Temperature calibration"
+      }
+    },
+    "select": {
+      "mode": {
+        "name": "Mode"
+      }
+    },
+    "sensor": {
+      "raw_temperature": {
+        "name": "Raw temperature"
+      },
+      "night_temperature": {
+        "name": "Night temperature"
+      },
+      "sunrise_minutes": {
+        "name": "Sunrise minutes"
+      },
+      "sunset_minutes": {
+        "name": "Sunset minutes"
+      },
+      "transition_minutes": {
+        "name": "Transition minutes"
+      }
+    }
+  }
+}
