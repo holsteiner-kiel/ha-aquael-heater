@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.1
+
+- Fix options flow crash when opening the integration configuration dialog.
+
 ## 0.1.0
 
 - Initial HACS-ready development release
