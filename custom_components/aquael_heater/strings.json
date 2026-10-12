@@ -3,6 +3,13 @@
     "step": {
       "user": {
         "title": "Aquael Heater",
+        "description": "Select a discovered Aquael Flow Heater BT or enter the BLE address manually.",
+        "data": {
+          "device": "Device"
+        }
+      },
+      "manual": {
+        "title": "Aquael Heater",
         "description": "Enter the BLE address of your Aquael Flow Heater BT.",
         "data": {
           "address": "BLE address"
@@ -42,14 +49,14 @@
       "night_temperature": {
         "name": "Night temperature"
       },
-      "sunrise_minutes": {
-        "name": "Sunrise minutes"
+      "sunrise": {
+        "name": "Sunrise"
       },
-      "sunset_minutes": {
-        "name": "Sunset minutes"
+      "sunset": {
+        "name": "Sunset"
       },
       "transition_minutes": {
-        "name": "Transition minutes"
+        "name": "Transition duration"
       }
     }
   }
