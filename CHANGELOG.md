@@ -2,9 +2,18 @@
 
 ## 0.1.0
 
-- Initial development version
-- Add Bluetooth discovery and manual setup flow
-- Add climate entity
-- Add max power and calibration number entities
-- Add mode select entity
-- Add diagnostic sensors disabled by default
+- Initial HACS-ready development release
+- Add Bluetooth discovery for `Flow Heater BT`
+- Add manual setup flow with discovered-device selection and BLE address fallback
+- Require user confirmation for Bluetooth-discovered devices
+- Add climate entity for heater on/off and target temperature
+- Add mode select entity (`fixed` / `day_night`)
+- Add max power control
+- Add night temperature control
+- Add sunrise and sunset time controls
+- Add transition duration control
+- Add temperature calibration control
+- Add raw temperature as disabled-by-default diagnostic sensor
+- Add diagnostics support
+- Add English and German config flow translations
+- Add validation workflow for HACS and hassfest
