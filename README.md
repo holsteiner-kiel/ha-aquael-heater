@@ -1,6 +1,6 @@
 # Aquael Heater
 
-![Aquael Heater banner](docs/banner.jpg)
+![Aquael Heater banner](docs/banner.svg)
 
 Home Assistant custom integration for the **Aquael Flow Heater BT** using Home Assistant Bluetooth and ESPHome Bluetooth Proxy.
 
