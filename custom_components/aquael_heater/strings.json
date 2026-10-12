@@ -35,6 +35,12 @@
       },
       "temperature_calibration": {
         "name": "Temperature calibration"
+      },
+      "night_temperature": {
+        "name": "Night temperature"
+      },
+      "transition_duration": {
+        "name": "Transition duration"
       }
     },
     "select": {
@@ -45,6 +51,14 @@
     "sensor": {
       "raw_temperature": {
         "name": "Raw temperature"
+      }
+    },
+    "time": {
+      "sunrise": {
+        "name": "Sunrise"
+      },
+      "sunset": {
+        "name": "Sunset"
       }
     }
   }
