@@ -75,6 +75,11 @@
       "sunset": {
         "name": "Sunset"
       }
+    },
+    "binary_sensor": {
+      "connectivity": {
+        "name": "Connectivity"
+      }
     }
   },
   "issues": {
