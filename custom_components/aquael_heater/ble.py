@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import logging
 from typing import Any
 
@@ -101,6 +102,8 @@ class AquaelBluetoothClient:
     def __init__(self, hass: HomeAssistant, address: str) -> None:
         self.hass = hass
         self.address = address
+        # One GATT connection at a time, including post-write verification.
+        self._operation_lock = asyncio.Lock()
 
     async def _connect(self) -> BleakClientWithServiceCache:
         ble_device = bluetooth.async_ble_device_from_address(
@@ -124,54 +127,56 @@ class AquaelBluetoothClient:
         )
 
     async def read_state(self) -> dict[str, Any]:
-        client = await self._connect()
+        async with self._operation_lock:
+            client = await self._connect()
 
-        try:
-            enabled_raw = await client.read_gatt_char(UUID_ENABLED)
-            mode_raw = await client.read_gatt_char(UUID_MODE)
-            day_temp_raw = await client.read_gatt_char(UUID_DAY_OR_FIXED_TEMP)
-            night_temp_raw = await client.read_gatt_char(UUID_NIGHT_TEMP)
-            max_watt_raw = await client.read_gatt_char(UUID_MAX_WATT)
-            calibration_raw = await client.read_gatt_char(UUID_CALIBRATION)
-            current_corrected_raw = await client.read_gatt_char(UUID_CURRENT_TEMP_CORRECTED)
-            current_raw = await client.read_gatt_char(UUID_CURRENT_TEMP_RAW)
-            sunrise_raw = await client.read_gatt_char(UUID_SUNRISE)
-            sunset_raw = await client.read_gatt_char(UUID_SUNSET)
-            transition_raw = await client.read_gatt_char(UUID_TRANSITION_MINUTES)
+            try:
+                enabled_raw = await client.read_gatt_char(UUID_ENABLED)
+                mode_raw = await client.read_gatt_char(UUID_MODE)
+                day_temp_raw = await client.read_gatt_char(UUID_DAY_OR_FIXED_TEMP)
+                night_temp_raw = await client.read_gatt_char(UUID_NIGHT_TEMP)
+                max_watt_raw = await client.read_gatt_char(UUID_MAX_WATT)
+                calibration_raw = await client.read_gatt_char(UUID_CALIBRATION)
+                current_corrected_raw = await client.read_gatt_char(UUID_CURRENT_TEMP_CORRECTED)
+                current_raw = await client.read_gatt_char(UUID_CURRENT_TEMP_RAW)
+                sunrise_raw = await client.read_gatt_char(UUID_SUNRISE)
+                sunset_raw = await client.read_gatt_char(UUID_SUNSET)
+                transition_raw = await client.read_gatt_char(UUID_TRANSITION_MINUTES)
 
-            state = {
-                "enabled": enabled_raw[0] == 1,
-                "mode": device_to_mode(mode_raw),
-                "day_or_fixed_temp_c": device_to_temp(day_temp_raw),
-                "night_temp_c": device_to_temp(night_temp_raw),
-                "max_watt": u32le_to_int(max_watt_raw),
-                "calibration_c": device_to_calibration(calibration_raw),
-                "current_temp_corrected_c": device_to_temp(current_corrected_raw),
-                "current_temp_raw_c": device_to_temp(current_raw),
-                "sunrise_minutes": device_to_minutes(sunrise_raw),
-                "sunset_minutes": device_to_minutes(sunset_raw),
-                "transition_minutes": device_to_minutes(transition_raw),
-            }
+                state = {
+                    "enabled": enabled_raw[0] == 1,
+                    "mode": device_to_mode(mode_raw),
+                    "day_or_fixed_temp_c": device_to_temp(day_temp_raw),
+                    "night_temp_c": device_to_temp(night_temp_raw),
+                    "max_watt": u32le_to_int(max_watt_raw),
+                    "calibration_c": device_to_calibration(calibration_raw),
+                    "current_temp_corrected_c": device_to_temp(current_corrected_raw),
+                    "current_temp_raw_c": device_to_temp(current_raw),
+                    "sunrise_minutes": device_to_minutes(sunrise_raw),
+                    "sunset_minutes": device_to_minutes(sunset_raw),
+                    "transition_minutes": device_to_minutes(transition_raw),
+                }
 
-            _LOGGER.debug("Read Aquael Heater state: %s", state)
-            return state
+                _LOGGER.debug("Read Aquael Heater state: %s", state)
+                return state
 
-        finally:
-            await client.disconnect()
+            finally:
+                await client.disconnect()
 
     async def write_char(self, uuid: str, payload: bytes) -> None:
-        client = await self._connect()
+        async with self._operation_lock:
+            client = await self._connect()
 
-        try:
-            _LOGGER.debug(
-                "Writing Aquael Heater characteristic %s payload=%s",
-                uuid,
-                payload.hex(" "),
-            )
-            await client.write_gatt_char(uuid, payload, response=True)
+            try:
+                _LOGGER.debug(
+                    "Writing Aquael Heater characteristic %s payload=%s",
+                    uuid,
+                    payload.hex(" "),
+                )
+                await client.write_gatt_char(uuid, payload, response=True)
 
-        finally:
-            await client.disconnect()
+            finally:
+                await client.disconnect()
 
     async def set_enabled(self, enabled: bool) -> None:
         await self.write_char(UUID_ENABLED, bytes([1 if enabled else 0]))
