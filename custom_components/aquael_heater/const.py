@@ -4,6 +4,7 @@ from homeassistant.const import Platform
 
 DOMAIN = "aquael_heater"
 PLATFORMS: list[Platform] = [
+    Platform.BINARY_SENSOR,
     Platform.CLIMATE,
     Platform.SELECT,
     Platform.NUMBER,

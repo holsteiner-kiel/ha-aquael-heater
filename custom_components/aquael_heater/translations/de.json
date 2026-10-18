@@ -75,6 +75,11 @@
       "sunset": {
         "name": "Sonnenuntergang"
       }
+    },
+    "binary_sensor": {
+      "connectivity": {
+        "name": "Erreichbarkeit"
+      }
     }
   },
   "issues": {
