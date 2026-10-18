@@ -2,6 +2,7 @@
 
 ## 0.2.1
 
+- Add an always-available diagnostic connectivity binary sensor for Home Assistant automations and external monitoring.
 - Serialize Bluetooth read and write sessions to avoid overlapping GATT connections.
 - Add graduated cooldowns (60–300 seconds) after repeated failed polling cycles.
 - Reduce repeated Bluetooth error warnings and log connection recovery.
