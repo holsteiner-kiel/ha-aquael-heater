@@ -10,17 +10,16 @@ from typing import Any
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import issue_registry as ir
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 from .ble import AquaelBluetoothClient
 from .const import CONF_ADDRESS, CONF_POLL_INTERVAL, DEFAULT_NAME, DEFAULT_POLL_INTERVAL, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
-BLE_READ_ATTEMPTS = 3
+BLE_READ_ATTEMPTS = 2
 BLE_RETRY_DELAY_SECONDS = 2
-BLE_FAILURE_BACKOFF_BASE_SECONDS = 60
-BLE_FAILURE_BACKOFF_MAX_SECONDS = 300
+BLE_FAILURE_BACKOFF_SECONDS = (120, 300, 600)
 WRITE_REFRESH_ATTEMPTS = 3
 WRITE_REFRESH_RETRY_DELAY_SECONDS = 1
 STALE_DATA_TIMEOUT_SECONDS = 5 * 60
@@ -55,8 +54,10 @@ class AquaelDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
 
     async def _async_update_data(self) -> dict[str, Any]:
         # Avoid hammering a heater that has stopped advertising over Bluetooth.
-        if self.data and time.monotonic() < self._next_ble_retry_at:
-            return self.data
+        if time.monotonic() < self._next_ble_retry_at:
+            # Return an empty snapshot during initial startup so the diagnostic
+            # connectivity entity can be created even while BLE is offline.
+            return self.data if self.data is not None else {}
 
         last_error: Exception | None = None
 
@@ -80,10 +81,9 @@ class AquaelDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             return data
 
         self._failed_update_cycles += 1
-        backoff = min(
-            BLE_FAILURE_BACKOFF_BASE_SECONDS * (2 ** min(self._failed_update_cycles - 1, 3)),
-            BLE_FAILURE_BACKOFF_MAX_SECONDS,
-        )
+        backoff = BLE_FAILURE_BACKOFF_SECONDS[
+            min(self._failed_update_cycles - 1, len(BLE_FAILURE_BACKOFF_SECONDS) - 1)
+        ]
         self._next_ble_retry_at = time.monotonic() + backoff
         if self._failed_update_cycles == 1:
             _LOGGER.warning(
@@ -115,7 +115,10 @@ class AquaelDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             )
             return self.data
 
-        raise UpdateFailed(f"Failed to update Aquael Heater: {last_error}")
+        # Do not fail config entry's first refresh: otherwise HA never forwards
+        # the entity platforms and the connectivity sensor is not registered.
+        # Other entities remain unavailable because no valid state was read.
+        return {}
 
     async def async_write_and_refresh(
         self,
