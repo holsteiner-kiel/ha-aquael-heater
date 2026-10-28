@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import time
 from typing import Any
 
 from bleak_retry_connector import BleakClientWithServiceCache, establish_connection
@@ -117,17 +118,27 @@ class AquaelBluetoothClient:
                 f"Aquael Heater not found by HA Bluetooth: {self.address}"
             )
 
-        _LOGGER.debug("Connecting to Aquael Heater %s", self.address)
-
-        return await establish_connection(
-            BleakClientWithServiceCache,
-            ble_device,
-            DEFAULT_NAME,
-            timeout=20,
-        )
+        _LOGGER.debug("Connecting to Aquael Heater %s (BLE device %r)", self.address, ble_device)
+        started = time.monotonic()
+        try:
+            client = await establish_connection(
+                BleakClientWithServiceCache,
+                ble_device,
+                DEFAULT_NAME,
+                timeout=20,
+            )
+        except Exception:
+            _LOGGER.debug(
+                "Aquael BLE connection failed after %.2fs", time.monotonic() - started,
+                exc_info=True,
+            )
+            raise
+        _LOGGER.debug("Aquael BLE connection established in %.2fs", time.monotonic() - started)
+        return client
 
     async def read_state(self) -> dict[str, Any]:
         async with self._operation_lock:
+            started = time.monotonic()
             client = await self._connect()
 
             try:
@@ -157,14 +168,24 @@ class AquaelBluetoothClient:
                     "transition_minutes": device_to_minutes(transition_raw),
                 }
 
-                _LOGGER.debug("Read Aquael Heater state: %s", state)
+                _LOGGER.debug("Read Aquael Heater state in %.2fs: %s", time.monotonic() - started, state)
                 return state
 
+            except Exception:
+                _LOGGER.debug(
+                    "Aquael BLE read failed after %.2fs", time.monotonic() - started,
+                    exc_info=True,
+                )
+                raise
             finally:
-                await client.disconnect()
+                try:
+                    await client.disconnect()
+                except Exception:
+                    _LOGGER.warning("Aquael BLE disconnect after read failed", exc_info=True)
 
     async def write_char(self, uuid: str, payload: bytes) -> None:
         async with self._operation_lock:
+            started = time.monotonic()
             client = await self._connect()
 
             try:
@@ -174,9 +195,18 @@ class AquaelBluetoothClient:
                     payload.hex(" "),
                 )
                 await client.write_gatt_char(uuid, payload, response=True)
-
+                _LOGGER.debug("Aquael BLE write completed in %.2fs", time.monotonic() - started)
+            except Exception:
+                _LOGGER.debug(
+                    "Aquael BLE write failed after %.2fs", time.monotonic() - started,
+                    exc_info=True,
+                )
+                raise
             finally:
-                await client.disconnect()
+                try:
+                    await client.disconnect()
+                except Exception:
+                    _LOGGER.warning("Aquael BLE disconnect after write failed", exc_info=True)
 
     async def set_enabled(self, enabled: bool) -> None:
         await self.write_char(UUID_ENABLED, bytes([1 if enabled else 0]))
