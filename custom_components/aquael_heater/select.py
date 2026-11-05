@@ -13,7 +13,7 @@ async def async_setup_entry(hass, entry, async_add_entities) -> None:
 
 
 class AquaelModeSelect(AquaelEntity, SelectEntity):
-    """Mode select for Aquael Flow Heater BT."""
+    """Mode select for Aquael heaters."""
 
     def __init__(self, coordinator, entry) -> None:
         super().__init__(coordinator, entry, "mode")

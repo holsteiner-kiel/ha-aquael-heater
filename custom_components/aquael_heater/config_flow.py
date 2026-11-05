@@ -13,13 +13,17 @@ from homeassistant.helpers import selector
 
 from .const import (
     CONF_ADDRESS,
+    CONF_MODEL,
     CONF_POLL_INTERVAL,
     DEFAULT_NAME,
     DEFAULT_POLL_INTERVAL,
     DOMAIN,
     MAX_POLL_INTERVAL,
     MIN_POLL_INTERVAL,
+    MODEL_FLOW,
+    MODEL_ULTRA,
     POLL_INTERVAL_STEP,
+    SUPPORTED_MODELS,
 )
 
 ADDRESS_RE = re.compile(r"^[0-9A-Fa-f]{2}(:[0-9A-Fa-f]{2}){5}$")
@@ -32,7 +36,14 @@ def normalize_address(address: str) -> str:
 
 def is_aquael_heater(service_info: BluetoothServiceInfoBleak) -> bool:
     name = service_info.name or ""
-    return name == "Flow Heater BT"
+    return name in SUPPORTED_MODELS
+
+
+def get_device_model(service_info: BluetoothServiceInfoBleak) -> str:
+    name = service_info.name or ""
+    if name == MODEL_ULTRA:
+        return MODEL_ULTRA
+    return MODEL_FLOW
 
 
 class AquaelConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -73,9 +84,14 @@ class AquaelConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         name = self._discovery_info.name or DEFAULT_NAME
 
         if user_input is not None:
+            model = get_device_model(self._discovery_info)
+
             return self.async_create_entry(
                 title=name,
-                data={CONF_ADDRESS: address},
+                data={
+                    CONF_ADDRESS: address,
+                    CONF_MODEL: model,
+                },
             )
 
         return self.async_show_form(
@@ -91,6 +107,7 @@ class AquaelConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     ) -> FlowResult:
         if user_input is not None:
             selected = user_input["device"]
+
             if selected == MANUAL_ENTRY:
                 return await self.async_step_manual()
 
@@ -100,9 +117,14 @@ class AquaelConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             await self.async_set_unique_id(address)
             self._abort_if_unique_id_configured()
 
+            model = get_device_model(discovery_info)
+
             return self.async_create_entry(
                 title=discovery_info.name or DEFAULT_NAME,
-                data={CONF_ADDRESS: address},
+                data={
+                    CONF_ADDRESS: address,
+                    CONF_MODEL: model,
+                },
             )
 
         await self._async_refresh_discovered_devices()
@@ -111,6 +133,7 @@ class AquaelConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             return await self.async_step_manual()
 
         options: list[selector.SelectOptionDict] = []
+
         for address, service_info in sorted(self._discovered_devices.items()):
             name = service_info.name or DEFAULT_NAME
             options.append(
@@ -154,15 +177,35 @@ class AquaelConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 await self.async_set_unique_id(address)
                 self._abort_if_unique_id_configured()
 
+                model = user_input[CONF_MODEL]
+
                 return self.async_create_entry(
-                    title=DEFAULT_NAME,
-                    data={CONF_ADDRESS: address},
+                    title=model,
+                    data={
+                        CONF_ADDRESS: address,
+                        CONF_MODEL: model,
+                    },
                 )
 
         schema = vol.Schema(
             {
                 vol.Required(CONF_ADDRESS): selector.TextSelector(
-                    selector.TextSelectorConfig(type=selector.TextSelectorType.TEXT)
+                    selector.TextSelectorConfig(
+                        type=selector.TextSelectorType.TEXT
+                    )
+                ),
+                vol.Required(CONF_MODEL, default=MODEL_FLOW): selector.SelectSelector(
+                    selector.SelectSelectorConfig(
+                        options=[
+                            selector.SelectOptionDict(
+                                value=MODEL_FLOW, label=MODEL_FLOW
+                            ),
+                            selector.SelectOptionDict(
+                                value=MODEL_ULTRA, label=MODEL_ULTRA
+                            ),
+                        ],
+                        mode=selector.SelectSelectorMode.DROPDOWN,
+                    )
                 ),
             }
         )

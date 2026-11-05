@@ -3,16 +3,21 @@
     "step": {
       "user": {
         "title": "Aquael Heater",
-        "description": "Select a discovered Aquael Flow Heater BT or enter the BLE address manually.",
+        "description": "Select a discovered Aquael Heater BT or enter the BLE address manually.",
         "data": {
           "device": "Device"
         }
       },
+      "bluetooth_confirm": {
+        "title": "Aquael Heater",
+        "description": "Do you want to add {name} ({address})?"
+      },
       "manual": {
         "title": "Aquael Heater",
-        "description": "Enter the BLE address of your Aquael Flow Heater BT.",
+        "description": "Enter the BLE address and select your Aquael heater model.",
         "data": {
-          "address": "BLE address"
+          "address": "BLE address",
+          "model": "Heater model"
         }
       }
     },

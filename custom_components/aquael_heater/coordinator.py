@@ -13,7 +13,15 @@ from homeassistant.helpers import issue_registry as ir
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 from .ble import AquaelBluetoothClient
-from .const import CONF_ADDRESS, CONF_POLL_INTERVAL, DEFAULT_NAME, DEFAULT_POLL_INTERVAL, DOMAIN
+from .const import (
+    CONF_ADDRESS,
+    CONF_MODEL,
+    CONF_POLL_INTERVAL,
+    DEFAULT_NAME,
+    DEFAULT_POLL_INTERVAL,
+    DOMAIN,
+    MODEL_FLOW,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -27,15 +35,27 @@ BLE_UNAVAILABLE_ISSUE_ID = "ble_unavailable"
 
 
 class AquaelDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
-    """Coordinator for Aquael Flow Heater BT."""
+    """Coordinator for Aquael Flow and Ultra Heater BT."""
 
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
         self.entry = entry
-        self.client = AquaelBluetoothClient(hass, entry.data[CONF_ADDRESS])
+
+        model = entry.data.get(CONF_MODEL, MODEL_FLOW)
+
+        self.client = AquaelBluetoothClient(
+            hass,
+            entry.data[CONF_ADDRESS],
+            model,
+        )
+
+        self._device_name = entry.title or DEFAULT_NAME
         self._last_successful_update: float | None = None
         self._failed_update_cycles = 0
         self._next_ble_retry_at = 0.0
-        poll_interval = int(entry.options.get(CONF_POLL_INTERVAL, DEFAULT_POLL_INTERVAL))
+
+        poll_interval = int(
+            entry.options.get(CONF_POLL_INTERVAL, DEFAULT_POLL_INTERVAL)
+        )
 
         super().__init__(
             hass,
@@ -50,7 +70,11 @@ class AquaelDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         """Return True when the last successful BLE read is too old."""
         if self._last_successful_update is None:
             return True
-        return time.monotonic() - self._last_successful_update > STALE_DATA_TIMEOUT_SECONDS
+
+        return (
+            time.monotonic() - self._last_successful_update
+            > STALE_DATA_TIMEOUT_SECONDS
+        )
 
     async def _async_update_data(self) -> dict[str, Any]:
         # Avoid hammering a heater that has stopped advertising over Bluetooth.
@@ -64,10 +88,13 @@ class AquaelDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         for attempt in range(1, BLE_READ_ATTEMPTS + 1):
             try:
                 data = await self.client.read_state()
+
             except Exception as err:  # noqa: BLE001
                 last_error = err
+
                 _LOGGER.debug(
-                    "Failed to update Aquael Heater on attempt %s/%s: %s",
+                    "Failed to update %s on attempt %s/%s: %s",
+                    self._device_name,
                     attempt,
                     BLE_READ_ATTEMPTS,
                     err,
@@ -75,25 +102,34 @@ class AquaelDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
 
                 if attempt < BLE_READ_ATTEMPTS:
                     await asyncio.sleep(BLE_RETRY_DELAY_SECONDS)
+
                 continue
 
             self._mark_successful_update()
             return data
 
         self._failed_update_cycles += 1
+
         backoff = BLE_FAILURE_BACKOFF_SECONDS[
-            min(self._failed_update_cycles - 1, len(BLE_FAILURE_BACKOFF_SECONDS) - 1)
+            min(
+                self._failed_update_cycles - 1,
+                len(BLE_FAILURE_BACKOFF_SECONDS) - 1,
+            )
         ]
+
         self._next_ble_retry_at = time.monotonic() + backoff
+
         if self._failed_update_cycles == 1:
             _LOGGER.warning(
-                "Aquael Heater Bluetooth communication failed; retrying in %ss: %s",
+                "%s Bluetooth communication failed; retrying in %ss: %s",
+                self._device_name,
                 backoff,
                 last_error,
             )
         else:
             _LOGGER.debug(
-                "Aquael Heater still unreachable (failure cycle %s, retry in %ss): %s",
+                "%s still unreachable (failure cycle %s, retry in %ss): %s",
+                self._device_name,
                 self._failed_update_cycles,
                 backoff,
                 last_error,
@@ -101,7 +137,8 @@ class AquaelDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
 
         if self.data and not self.data_is_stale:
             _LOGGER.debug(
-                "Keeping last known Aquael Heater state after temporary BLE failure: %s",
+                "Keeping last known %s state after temporary BLE failure: %s",
+                self._device_name,
                 last_error,
             )
             return self.data
@@ -110,7 +147,8 @@ class AquaelDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
 
         if self.data:
             _LOGGER.debug(
-                "Aquael Heater data is stale after repeated BLE failures: %s",
+                "%s data is stale after repeated BLE failures: %s",
+                self._device_name,
                 last_error,
             )
             return self.data
@@ -137,14 +175,18 @@ class AquaelDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         for attempt in range(1, WRITE_REFRESH_ATTEMPTS + 1):
             try:
                 latest_data = await self.client.read_state()
+
             except Exception as err:  # noqa: BLE001
                 last_error = err
+
                 _LOGGER.warning(
-                    "Failed to refresh Aquael Heater after write on attempt %s/%s: %s",
+                    "Failed to refresh %s after write on attempt %s/%s: %s",
+                    self._device_name,
                     attempt,
                     WRITE_REFRESH_ATTEMPTS,
                     err,
                 )
+
             else:
                 self._mark_successful_update()
                 self.async_set_updated_data(latest_data)
@@ -157,7 +199,8 @@ class AquaelDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                     return
 
                 _LOGGER.debug(
-                    "Aquael Heater write verification pending for %s: expected %r, got %r",
+                    "%s write verification pending for %s: expected %r, got %r",
+                    self._device_name,
                     expected_key,
                     expected_value,
                     latest_data.get(expected_key),
@@ -168,7 +211,9 @@ class AquaelDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
 
         if latest_data is not None:
             _LOGGER.warning(
-                "Aquael Heater write did not verify after %s refresh attempts for %s: expected %r, got %r",
+                "%s write did not verify after %s refresh attempts for %s: "
+                "expected %r, got %r",
+                self._device_name,
                 WRITE_REFRESH_ATTEMPTS,
                 expected_key,
                 expected_value,
@@ -200,13 +245,21 @@ class AquaelDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
     def _mark_successful_update(self) -> None:
         """Record successful communication and clear any stale repair issue."""
         self._last_successful_update = time.monotonic()
+
         if self._failed_update_cycles:
-            _LOGGER.info("Aquael Heater Bluetooth communication recovered")
+            _LOGGER.info(
+                "%s Bluetooth communication recovered",
+                self._device_name,
+            )
+
         self._failed_update_cycles = 0
         self._next_ble_retry_at = 0.0
         self._async_delete_ble_unavailable_issue()
 
-    def _async_create_ble_unavailable_issue(self, error: Exception | None) -> None:
+    def _async_create_ble_unavailable_issue(
+        self,
+        error: Exception | None,
+    ) -> None:
         """Create a Home Assistant repair issue for persistent BLE failures."""
         ir.async_create_issue(
             self.hass,
@@ -216,7 +269,7 @@ class AquaelDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             severity=ir.IssueSeverity.WARNING,
             translation_key=BLE_UNAVAILABLE_ISSUE_ID,
             translation_placeholders={
-                "device": DEFAULT_NAME,
+                "device": self._device_name,
                 "error": str(error) if error else "unknown error",
             },
         )

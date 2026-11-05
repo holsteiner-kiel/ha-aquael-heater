@@ -5,6 +5,10 @@
     {
       "connectable": true,
       "local_name": "Flow Heater BT"
+    },
+    {
+      "connectable": true,
+      "local_name": "Ultra Heater BT"
     }
   ],
   "codeowners": ["@holsteiner-kiel"],
